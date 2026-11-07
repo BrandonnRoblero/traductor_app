@@ -11,12 +11,15 @@ class NeonChip extends StatelessWidget {
   final Widget? leading;
   //etiqueta grande = boton TRADUCIR
   final bool big;
+  //etiqueta pequeña = idiomas de la red (para que quepan 3 por fila)
+  final bool compact;
 
   const NeonChip({
     super.key,
     required this.text,
     this.leading,
     this.big = false,
+    this.compact = false,
   });
 
   @override
@@ -24,6 +27,8 @@ class NeonChip extends StatelessWidget {
     return Container(
       padding: big
           ? const EdgeInsets.symmetric(horizontal: 26, vertical: 14)
+          : compact
+          ? const EdgeInsets.symmetric(horizontal: 9, vertical: 6)
           : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: neonPinkBox,
@@ -39,13 +44,13 @@ class NeonChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           //6.2 bandera (si tiene) al lado del texto
-          if (leading != null) ...[leading!, const SizedBox(width: 8)],
+          if (leading != null) ...[leading!, SizedBox(width: compact ? 6 : 8)],
           Text(
             text,
             style: TextStyle(
               color: neonPinkText,
               fontFamily: 'monospace',
-              fontSize: big ? 18 : 14,
+              fontSize: big ? 18 : (compact ? 12 : 14),
               fontWeight: big ? FontWeight.bold : FontWeight.normal,
               letterSpacing: big ? 3 : 0.5,
               shadows: const [Shadow(color: neonPink, blurRadius: 6)],

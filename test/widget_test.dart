@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:traductor_app/utils/flag_selector.dart';
+import 'package:traductor_app/utils/languages.dart';
 import 'package:traductor_app/utils/neon_nodes.dart';
 
 void main() {
@@ -50,5 +52,40 @@ void main() {
     // Esperar el rebote: debe volver a su posicion original.
     await tester.pumpAndSettle();
     expect(tester.getCenter(label), start);
+  });
+
+  testWidgets('FlagSelector elige idiomas y bloquea el de la otra fila', (
+    tester,
+  ) async {
+    var selected = languages[0];
+    final blocked = languages[1];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) => FlagSelector(
+              selected: selected,
+              blocked: blocked,
+              onSelected: (language) => setState(() => selected = language),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Muestra el nombre del idioma elegido.
+    expect(find.text('Inglés'), findsOneWidget);
+
+    // Tocar la bandera de Francia la elige.
+    await tester.tap(find.bySemanticsLabel('Francés'));
+    await tester.pumpAndSettle();
+    expect(selected.code, 'fr');
+    expect(find.text('Francés'), findsOneWidget);
+
+    // La bandera bloqueada (Español) no se puede elegir.
+    await tester.tap(find.bySemanticsLabel('Español'));
+    await tester.pumpAndSettle();
+    expect(selected.code, 'fr');
   });
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 //Banderas dibujadas con codigo (los emojis de bandera no se ven a color
@@ -17,6 +19,18 @@ class FlagIcon extends StatelessWidget {
   //Mexico (español)
   const FlagIcon.mexico({double width = 26})
     : this._(const _MexicoFlagPainter(), width: width);
+
+  //China (chino)
+  const FlagIcon.china({double width = 26})
+    : this._(const _ChinaFlagPainter(), width: width);
+
+  //Francia (frances)
+  const FlagIcon.france({double width = 26})
+    : this._(const _FranceFlagPainter(), width: width);
+
+  //Egipto (arabe)
+  const FlagIcon.egypt({double width = 26})
+    : this._(const _EgyptFlagPainter(), width: width);
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +109,93 @@ class _MexicoFlagPainter extends CustomPainter {
         height: size.height * 0.1,
       ),
       paint..color = const Color(0xFF1D7A3A),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//5.4 China: fondo rojo con una estrella grande y cuatro pequeñas
+class _ChinaFlagPainter extends CustomPainter {
+  const _ChinaFlagPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = const Color(0xFFDE2910);
+    canvas.drawRect(Offset.zero & size, paint);
+    paint.color = const Color(0xFFFFDE00);
+    final unit = size.height / 20;
+    _drawStar(canvas, Offset(5 * unit, 5 * unit), 3 * unit, paint);
+    for (final point in const [
+      Offset(10, 2),
+      Offset(12, 4),
+      Offset(12, 7),
+      Offset(10, 9),
+    ]) {
+      _drawStar(canvas, point * unit, unit, paint);
+    }
+  }
+
+  //estrella de 5 picos
+  void _drawStar(Canvas canvas, Offset center, double radius, Paint paint) {
+    final path = Path();
+    for (var i = 0; i < 10; i++) {
+      final r = i.isEven ? radius : radius * 0.4;
+      final angle = -pi / 2 + i * pi / 5;
+      final point = center + Offset(cos(angle), sin(angle)) * r;
+      i == 0
+          ? path.moveTo(point.dx, point.dy)
+          : path.lineTo(point.dx, point.dy);
+    }
+    canvas.drawPath(path..close(), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//5.5 Francia: azul, blanco y rojo en franjas verticales
+class _FranceFlagPainter extends CustomPainter {
+  const _FranceFlagPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final band = size.width / 3;
+    final paint = Paint();
+    const colors = [Color(0xFF0055A4), Colors.white, Color(0xFFEF4135)];
+    for (var i = 0; i < 3; i++) {
+      canvas.drawRect(
+        Rect.fromLTWH(band * i, 0, band + 0.5, size.height),
+        paint..color = colors[i],
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//5.6 Egipto: rojo, blanco y negro con el aguila dorada al centro
+class _EgyptFlagPainter extends CustomPainter {
+  const _EgyptFlagPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final band = size.height / 3;
+    final paint = Paint();
+    const colors = [Color(0xFFCE1126), Colors.white, Colors.black];
+    for (var i = 0; i < 3; i++) {
+      canvas.drawRect(
+        Rect.fromLTWH(0, band * i, size.width, band + 0.5),
+        paint..color = colors[i],
+      );
+    }
+    //aguila simplificada (circulo dorado)
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.height * 0.12,
+      paint..color = const Color(0xFFC09300),
     );
   }
 
