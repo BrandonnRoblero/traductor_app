@@ -2,31 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:rive/components.dart';
 import 'package:rive/rive.dart';
 
-//Capas del fondo del artboard que se ocultan para ver solo al personaje
-//Texture_03.png es una textura que oscurece todo el rectangulo
-const List<String> backgroundLayers = ['Bg', 'Rectangle', 'Texture_03.png'];
+//Nombres de las capas del archivo .riv
+//Root contiene al personaje (PlanetGroup) y a las estrellas (Stars)
+const String rootLayer = 'Root';
+const String hitAreaLayer = 'HitArea';
 
 //Colores para que el planeta de Rive parezca la Tierra
 const Color oceanColor = Color(0xFF1E88E5); //azul oceano
 const Color oceanLightColor = Color(0xFF42A5F5); //azul oceano claro
 const Color landColor = Color(0xFF2ECC71); //verde continente
 
-//3.0 oculta el fondo del artboard (rectangulo oscuro)
-//para que el personaje flote sobre el degradado de la pantalla
-void hideArtboardBackground(Artboard artboard) {
+//3.0 oculta el fondo del artboard (rectangulo, textura...) y deja
+//solo al personaje y sus estrellas, asi se ve el degradado de la app
+void showOnlyCharacter(Artboard artboard) {
   //relleno propio del artboard
   for (final fill in artboard.fills) {
     fill.isVisible = false;
   }
-  //capas del fondo: se vuelven transparentes
   artboard.forEachComponent((component) {
     if (component is! TransformComponent) return;
-    //se oculta si esta en la lista o si es una textura (por si cambia de nombre)
-    if (backgroundLayers.contains(component.name) ||
-        component.name.contains('Texture')) {
+    //todo lo que cuelga directo del artboard menos Root (fondo, textura...)
+    final isTopLayer = component.parent == artboard;
+    if (isTopLayer && component.name != rootLayer) {
       component.opacity = 0;
     }
   });
+}
+
+//3.0.1 zona del artboard donde el planeta "siente" el mouse (capa HitArea)
+//si no existe se usa todo el artboard
+Rect hitAreaBounds(Artboard artboard) {
+  Rect? bounds;
+  artboard.forEachComponent((component) {
+    if (component is! Shape) return;
+    if (component.name != hitAreaLayer && !_isInside(component, hitAreaLayer)) {
+      return;
+    }
+    final box = component.worldBounds;
+    final rect = Rect.fromLTWH(box.left, box.top, box.width, box.height);
+    bounds = bounds == null ? rect : bounds!.expandToInclude(rect);
+  });
+  return bounds ?? Rect.fromLTWH(0, 0, artboard.width, artboard.height);
 }
 
 //3.1 recorre las figuras del artboard y cambia sus colores
