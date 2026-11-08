@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rive/math.dart';
 import 'package:rive/rive.dart';
 import 'package:traductor_app/utils/earth_colors.dart';
+import 'package:traductor_app/utils/eye_follow.dart';
 
 //1.0 archivo de Rive: se carga UNA sola vez y lo comparten todas las pantallas
 final Future<RiveFile> _riveFile = RiveFile.asset(
@@ -31,6 +32,8 @@ class _PlanetCharacterState extends State<PlanetCharacter> {
 
   //2.1 cerebro de la animacion del personaje (para que siga el mouse)
   StateMachineController? _controller;
+  //controlador que mueve las pupilas
+  final EyeFollowController _eyes = EyeFollowController();
   //zona del artboard donde el planeta detecta el mouse
   Rect? _hitArea;
   //se usa el 90% de la zona para no salirse de su orilla
@@ -60,6 +63,8 @@ class _PlanetCharacterState extends State<PlanetCharacter> {
     //el artboard se actualiza una vez para conocer la posicion de sus figuras
     artboard.advance(0);
     _hitArea = hitAreaBounds(artboard);
+    //las pupilas siguen al mouse (se agrega despues de la maquina de estados)
+    _eyes.attach(artboard);
   }
 
   //2.5 manda el mouse/dedo de TODA la pantalla al personaje
@@ -87,6 +92,8 @@ class _PlanetCharacterState extends State<PlanetCharacter> {
     //mantenerlo dentro de un circulo (la zona es redonda)
     final length = Offset(tx, ty).distance;
     final scale = length > 1 ? 1 / length : 1.0;
+    //las pupilas miran en la misma direccion que la cabeza
+    _eyes.lookAt(Offset(tx * scale, ty * scale));
     final position = Vec2D.fromValues(
       center.dx + tx * scale * area.width / 2 * _hitAreaMargin,
       center.dy + ty * scale * area.height / 2 * _hitAreaMargin,
@@ -145,6 +152,7 @@ class _PlanetCharacterState extends State<PlanetCharacter> {
     //2.7 dejar de escuchar el mouse y liberar el controlador
     GestureBinding.instance.pointerRouter.removeGlobalRoute(_forwardPointer);
     _controller?.dispose();
+    _eyes.dispose();
     super.dispose();
   }
 }

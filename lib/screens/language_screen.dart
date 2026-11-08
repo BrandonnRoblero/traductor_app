@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:traductor_app/screens/mode_screen.dart';
 import 'package:traductor_app/utils/animated_gradient_background.dart';
 import 'package:traductor_app/utils/flag_selector.dart';
 import 'package:traductor_app/utils/languages.dart';
+import 'package:traductor_app/utils/neon_app_bar.dart';
 import 'package:traductor_app/utils/neon_arrow_button.dart';
 import 'package:traductor_app/utils/neon_chip.dart';
 import 'package:traductor_app/utils/planet_character.dart';
@@ -19,9 +21,19 @@ class _LanguageScreenState extends State<LanguageScreen> {
   Language _from = languages[0];
   Language _to = languages[1];
 
-  //1.2 accion de la flecha
+  //1.2 accion de la flecha: ir a la pantalla de Audio / Foto con los idiomas
   void _onContinue() {
-    //TODO: siguiente paso, ir a la pantalla de Audio / Foto con _from y _to
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 700),
+        reverseTransitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ModeScreen(from: _from, to: _to),
+        //la nueva pantalla aparece desvaneciendose mientras el planeta viaja
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    );
   }
 
   @override
@@ -29,6 +41,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
     //PARA OBTENER EL TAMAÑO DE LA PANTALLA
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      //barra neon con boton para regresar a la bienvenida
+      appBar: const NeonAppBar(title: 'ELIGE LOS IDIOMAS'),
       body: Stack(
         children: [
           // 1. fondo degradado animado de toda la pantalla
@@ -37,15 +51,16 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ),
           // 2. contenido
           SafeArea(
+            top: false,
             child: Column(
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 //Hero: el planeta llega desde la pantalla de bienvenida
                 Hero(
                   tag: PlanetCharacter.heroTag,
-                  child: PlanetCharacter(height: size.height * 0.26),
+                  child: PlanetCharacter(height: size.height * 0.22),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 18),
                 // 3. idioma de origen
                 const NeonChip(text: 'IDIOMA A TRADUCIR'),
                 const SizedBox(height: 18),
