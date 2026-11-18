@@ -25,9 +25,9 @@ final List<Language> languages = [
     flag: (w) => FlagIcon.mexico(width: w),
   ),
   Language(
-    code: 'zh',
-    name: 'Chino',
-    flag: (w) => FlagIcon.china(width: w),
+    code: 'ja',
+    name: 'Japonés',
+    flag: (w) => FlagIcon.japan(width: w),
   ),
   Language(
     code: 'fr',

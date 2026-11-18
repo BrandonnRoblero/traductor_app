@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:traductor_app/utils/typewriter.dart';
 
 //Animaciones de Rive de la pantalla de modos (licencia CC BY):
 //- ai_voice.riv: "AI Voice" de alexrengised
 //- camera_3d.riv: "3D Icon Camera Demo" de JcToon
 //- ring_glow.riv: "Ring glow2" de marlon1
+//- typing_effect.riv: "Typing effect" de utsav-JV6F9
 
 //13.0 quita el fondo propio del artboard para que se vea el de la app
 void hideArtboardBackground(Artboard artboard) {
@@ -72,6 +74,54 @@ class _Camera3DState extends State<Camera3D> {
         fit: BoxFit.contain,
         onInit: _onInit,
       ),
+    );
+  }
+}
+
+//13.5 frases neon que se escriben y se borran solas (tarjeta de Texto).
+//Usa la animacion "Typing effect" pero con nuestras frases y sin su fondo.
+class TypingText extends StatefulWidget {
+  final List<String> phrases;
+
+  const TypingText({
+    super.key,
+    this.phrases = const [
+      'Hola, ¿qué tal?',
+      'Hello',
+      'Bonjour',
+      'Escribe aquí',
+    ],
+  });
+
+  @override
+  State<TypingText> createState() => _TypingTextState();
+}
+
+class _TypingTextState extends State<TypingText> {
+  late final TypewriterController _typewriter = TypewriterController(
+    widget.phrases,
+  );
+
+  void _onInit(Artboard artboard) {
+    hideArtboardBackground(artboard);
+    _typewriter.attach(artboard);
+  }
+
+  @override
+  void dispose() {
+    _typewriter.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RiveAnimation.asset(
+      'assets/animations/typing_effect.riv',
+      artboard: 'Artboard',
+      stateMachines: const ['State Machine 1'],
+      //cover: el artboard es cuadrado y la tarjeta es ancha
+      fit: BoxFit.cover,
+      onInit: _onInit,
     );
   }
 }

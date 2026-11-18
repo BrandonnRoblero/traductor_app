@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 //Banderas dibujadas con codigo (los emojis de bandera no se ven a color
@@ -20,9 +18,9 @@ class FlagIcon extends StatelessWidget {
   const FlagIcon.mexico({double width = 26})
     : this._(const _MexicoFlagPainter(), width: width);
 
-  //China (chino)
-  const FlagIcon.china({double width = 26})
-    : this._(const _ChinaFlagPainter(), width: width);
+  //Japon (japones)
+  const FlagIcon.japan({double width = 26})
+    : this._(const _JapanFlagPainter(), width: width);
 
   //Francia (frances)
   const FlagIcon.france({double width = 26})
@@ -116,39 +114,20 @@ class _MexicoFlagPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-//5.4 China: fondo rojo con una estrella grande y cuatro pequeñas
-class _ChinaFlagPainter extends CustomPainter {
-  const _ChinaFlagPainter();
+//5.4 Japon: fondo blanco con un circulo rojo al centro
+class _JapanFlagPainter extends CustomPainter {
+  const _JapanFlagPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color(0xFFDE2910);
+    final paint = Paint()..color = Colors.white;
     canvas.drawRect(Offset.zero & size, paint);
-    paint.color = const Color(0xFFFFDE00);
-    final unit = size.height / 20;
-    _drawStar(canvas, Offset(5 * unit, 5 * unit), 3 * unit, paint);
-    for (final point in const [
-      Offset(10, 2),
-      Offset(12, 4),
-      Offset(12, 7),
-      Offset(10, 9),
-    ]) {
-      _drawStar(canvas, point * unit, unit, paint);
-    }
-  }
-
-  //estrella de 5 picos
-  void _drawStar(Canvas canvas, Offset center, double radius, Paint paint) {
-    final path = Path();
-    for (var i = 0; i < 10; i++) {
-      final r = i.isEven ? radius : radius * 0.4;
-      final angle = -pi / 2 + i * pi / 5;
-      final point = center + Offset(cos(angle), sin(angle)) * r;
-      i == 0
-          ? path.moveTo(point.dx, point.dy)
-          : path.lineTo(point.dx, point.dy);
-    }
-    canvas.drawPath(path..close(), paint);
+    //el sol mide 3/5 del alto de la bandera
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.height * 0.3,
+      paint..color = const Color(0xFFBC002D),
+    );
   }
 
   @override

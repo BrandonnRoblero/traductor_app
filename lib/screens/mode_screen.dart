@@ -28,6 +28,10 @@ class ModeScreen extends StatelessWidget {
     //TODO: siguiente paso, pantalla de camara / galeria
   }
 
+  void _onText() {
+    //TODO: siguiente paso, pantalla para escribir y traducir
+  }
+
   @override
   Widget build(BuildContext context) {
     //PARA OBTENER EL TAMAÑO DE LA PANTALLA
@@ -83,6 +87,13 @@ class ModeScreen extends StatelessWidget {
                       subtitle: 'Toma o elige una foto',
                       animation: (active) => Camera3D(active: active),
                       onTap: _onPhoto,
+                    ),
+                    const SizedBox(height: 20),
+                    ModeCard(
+                      title: 'TEXTO',
+                      subtitle: 'Escribe y traduce',
+                      animation: (_) => const TypingText(),
+                      onTap: _onText,
                     ),
                     const SizedBox(height: 24),
                   ],

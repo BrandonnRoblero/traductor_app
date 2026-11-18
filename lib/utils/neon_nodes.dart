@@ -5,7 +5,7 @@ import 'package:traductor_app/utils/neon_chip.dart';
 import 'package:traductor_app/utils/neon_title.dart';
 
 //Red neon con forma de red neuronal:
-//capa 1 = Ingles, Español, Chino
+//capa 1 = Ingles, Español, Japones
 //capa 2 = Frances, ⇄, Arabe
 //capa 3 = boton TRADUCIR
 //Todas las etiquetas se pueden arrastrar y regresan a su lugar con rebote.
@@ -31,7 +31,7 @@ class _Node {
 class _NeonNodesState extends State<NeonNodes>
     with SingleTickerProviderStateMixin {
   //7.1 indices de cada etiqueta
-  static const List<int> _topLayer = [0, 1, 2]; //Ingles, Español, Chino
+  static const List<int> _topLayer = [0, 1, 2]; //Ingles, Español, Japones
   static const List<int> _middleLayer = [3, 4, 5]; //Frances, ⇄, Arabe
   static const int _buttonIndex = 6; //TRADUCIR
   final List<_Node> _nodes = List.generate(7, (_) => _Node());
@@ -63,8 +63,8 @@ class _NeonNodesState extends State<NeonNodes>
     final middleSpread = spread * 0.92;
     final ingles = Offset(center - spread, _topY);
     final arabe = Offset(center + middleSpread, _middleY);
-    //⇄ va justo donde se cruzan las lineas Ingles→Arabe y Chino→Frances,
-    //asi sus lineas con Ingles y Chino se ven como una sola linea recta
+    //⇄ va justo donde se cruzan las lineas Ingles→Arabe y Japones→Frances,
+    //asi sus lineas con Ingles y Japones se ven como una sola linea recta
     final start = ingles.translate(0, _dotGap);
     final end = arabe.translate(0, -_dotGap);
     final t = (center - start.dx) / (end.dx - start.dx);
@@ -182,7 +182,7 @@ class _NeonNodesState extends State<NeonNodes>
           final positions = [
             for (var i = 0; i < _nodes.length; i++) homes[i] + _nodes[i].offset,
           ];
-          //orden de languages: 0 Ingles, 1 Español, 2 Chino, 3 Frances, 4 Arabe
+          //orden de languages: 0 Ingles, 1 Español, 2 Japones, 3 Frances, 4 Arabe
           return Stack(
             clipBehavior: Clip.none,
             children: [
@@ -190,7 +190,7 @@ class _NeonNodesState extends State<NeonNodes>
               Positioned.fill(
                 child: CustomPaint(painter: _NetworkPainter(positions)),
               ),
-              // 2. capa 1: Ingles, Español, Chino
+              // 2. capa 1: Ingles, Español, Japones
               _draggable(0, homes[0], _languageChip(0)),
               _draggable(1, homes[1], _languageChip(1)),
               _draggable(2, homes[2], _languageChip(2)),
