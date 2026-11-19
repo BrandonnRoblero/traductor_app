@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:traductor_app/screens/photo_screen.dart';
 import 'package:traductor_app/utils/animated_gradient_background.dart';
+import 'package:traductor_app/utils/language_pair.dart';
 import 'package:traductor_app/utils/languages.dart';
 import 'package:traductor_app/utils/mode_card.dart';
 import 'package:traductor_app/utils/neon_app_bar.dart';
-import 'package:traductor_app/utils/neon_chip.dart';
-import 'package:traductor_app/utils/neon_title.dart';
 import 'package:traductor_app/utils/planet_character.dart';
 import 'package:traductor_app/utils/rive_widgets.dart';
 
@@ -24,8 +24,18 @@ class ModeScreen extends StatelessWidget {
     //TODO: siguiente paso, pantalla para hablar y traducir
   }
 
-  void _onPhoto() {
-    //TODO: siguiente paso, pantalla de camara / galeria
+  //1.2 abrir la camara con el escaner (misma transicion que las otras pantallas)
+  void _onPhoto(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 500),
+        reverseTransitionDuration: const Duration(milliseconds: 400),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            PhotoScreen(from: from, to: to),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    );
   }
 
   void _onText() {
@@ -72,7 +82,7 @@ class ModeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 22),
                     // 4. idiomas elegidos
-                    _LanguagePair(from: from, to: to),
+                    LanguagePair(from: from, to: to),
                     const SizedBox(height: 26),
                     // 5. tarjetas de modo
                     ModeCard(
@@ -86,7 +96,7 @@ class ModeScreen extends StatelessWidget {
                       title: 'FOTO',
                       subtitle: 'Toma o elige una foto',
                       animation: (active) => Camera3D(active: active),
-                      onTap: _onPhoto,
+                      onTap: () => _onPhoto(context),
                     ),
                     const SizedBox(height: 20),
                     ModeCard(
@@ -101,43 +111,6 @@ class ModeScreen extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-//16.1 etiqueta con los dos idiomas: bandera + nombre → bandera + nombre
-class _LanguagePair extends StatelessWidget {
-  final Language from;
-  final Language to;
-
-  const _LanguagePair({required this.from, required this.to});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-      decoration: neonPinkDecoration(radius: 9),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          from.flag(32),
-          const SizedBox(width: 8),
-          Text(from.name, style: neonPinkTextStyle(fontSize: 16)),
-          const SizedBox(width: 12),
-          const Text(
-            '→',
-            style: TextStyle(
-              color: neonMint,
-              fontSize: 20,
-              shadows: [Shadow(color: neonMint, blurRadius: 6)],
-            ),
-          ),
-          const SizedBox(width: 12),
-          to.flag(32),
-          const SizedBox(width: 8),
-          Text(to.name, style: neonPinkTextStyle(fontSize: 16)),
         ],
       ),
     );

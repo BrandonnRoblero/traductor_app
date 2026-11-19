@@ -7,6 +7,7 @@ import 'package:traductor_app/utils/typewriter.dart';
 //- camera_3d.riv: "3D Icon Camera Demo" de JcToon
 //- ring_glow.riv: "Ring glow2" de marlon1
 //- typing_effect.riv: "Typing effect" de utsav-JV6F9
+//- scan_halo.riv: "Scan - Halo effect" de LuniDesign
 
 //13.0 quita el fondo propio del artboard para que se vea el de la app
 void hideArtboardBackground(Artboard artboard) {
@@ -123,6 +124,35 @@ class _TypingTextState extends State<TypingText> {
       fit: BoxFit.cover,
       onInit: _onInit,
     );
+  }
+}
+
+//13.7 halo de colores con rejilla de puntos que escanea (pantalla de foto)
+class ScanHalo extends StatelessWidget {
+  const ScanHalo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const RiveAnimation.asset(
+      'assets/animations/scan_halo.riv',
+      artboard: 'Scan',
+      stateMachines: ['State Machine 1'],
+      //fill: el halo cubre todo el recuadro de la camara
+      fit: BoxFit.fill,
+      onInit: _onInit,
+    );
+  }
+
+  //13.8 el escaner trae un relleno negro adentro que taparia la camara:
+  //se vuelven transparentes los colores oscuros y quedan el halo y los puntos
+  static void _onInit(Artboard artboard) {
+    hideArtboardBackground(artboard);
+    artboard.forEachComponent((component) {
+      if (component is! SolidColor) return;
+      if (component.color.computeLuminance() < 0.05) {
+        component.color = Colors.transparent;
+      }
+    });
   }
 }
 
